@@ -1,0 +1,4 @@
+node_modules/
+dist/
+# gsbl 由来の素材。権利上リポジトリには含めない
+public/media/

@@ -1,0 +1,24 @@
+{
+  "name": "stick-bugged-generator",
+  "version": "1.0.0",
+  "description": "Get Stick Bugged Lol video generator (browser-only)",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "node --test \"test/**/*.test.ts\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^24.19.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.7"
+  },
+  "dependencies": {
+    "mediabunny": "^1.61.3"
+  },
+  "private": true
+}

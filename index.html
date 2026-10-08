@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stick Bugged Generator</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <h1>Stick Bugged Generator</h1>
+      <p class="sub">画像から "Get Stick Bugged Lol" 動画を作ります。処理はすべてこのブラウザの中で行い、画像はどこにも送信しません。</p>
+    </header>
+
+    <main class="layout">
+      <section class="stage">
+        <div class="canvas-wrap" id="dropZone">
+          <canvas id="stage" width="720" height="720"></canvas>
+          <div class="placeholder" id="placeholder">
+            <p><strong>画像をドロップ</strong>、貼り付け（Ctrl+V）、または</p>
+            <label class="btn primary">画像を選ぶ<input type="file" id="fileInput" accept="image/*" hidden /></label>
+          </div>
+        </div>
+        <div class="stage-bar">
+          <span id="timeLabel" class="mono">0.00 / 0.00 秒</span>
+          <span id="hint" class="hint"></span>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <details open>
+          <summary>線分</summary>
+          <div class="row">
+            <label for="scale">検出の縮小率 <span class="val mono" id="scaleVal"></span></label>
+            <input type="range" id="scale" min="0.2" max="1" step="0.05" />
+          </div>
+          <div class="row">
+            <label for="minLen">最短の長さ <span class="val mono" id="minLenVal"></span></label>
+            <input type="range" id="minLen" min="0" max="200" step="5" />
+          </div>
+          <div class="row">
+            <label for="spacing">線どうしの間隔 <span class="val mono" id="spacingVal"></span></label>
+            <input type="range" id="spacing" min="0" max="150" step="5" />
+          </div>
+          <div class="row">
+            <label for="contrastW">輪郭の強さを重視 <span class="val mono" id="contrastWVal"></span></label>
+            <input type="range" id="contrastW" min="0" max="3" step="0.25" />
+          </div>
+          <p class="note">設定を変えると9本を選び直します（手動の調整は消えます）。間隔と輪郭の重視をどちらも 0 にすると、元の gsbl と同じ「長い順」になります。</p>
+          <div class="row inline">
+            <label><input type="checkbox" id="showCandidates" checked /> 候補を表示</label>
+            <button class="btn" id="drawBtn" aria-pressed="false">線を描く</button>
+            <button class="btn" id="resetBtn">自動検出に戻す</button>
+          </div>
+          <ol class="seg-list" id="segList"></ol>
+          <p class="note">線をクリックで選択。選択中に水色の候補をクリックすると差し替え、端点はドラッグで移動できます。番号は線が出る順番と、棒虫のどの部位になるかを表します。</p>
+        </details>
+
+        <details open>
+          <summary>変形（棒虫の形へ動く区間）</summary>
+          <div class="row">
+            <label for="tfFrames">長さ <span class="val mono" id="tfVal"></span></label>
+            <input type="range" id="tfFrames" min="9" max="52" step="1" />
+          </div>
+          <div class="row inline">
+            <label for="tfSeconds">秒数</label>
+            <input type="number" id="tfSeconds" min="0.3" max="1.73" step="0.05" class="num" />
+            <button class="btn" id="tfDefault">元の長さに戻す（1.73秒）</button>
+          </div>
+          <div class="row">
+            <label for="fitMode">音声の合わせ方</label>
+            <select id="fitMode">
+              <option value="auto">自動（タイムストレッチ、縮めすぎる分は中抜き）</option>
+              <option value="stretch">タイムストレッチのみ</option>
+              <option value="cut">中抜きのみ</option>
+            </select>
+          </div>
+          <p class="note mono" id="fitInfo"></p>
+          <div class="row">
+            <label for="easing">動き方</label>
+            <select id="easing">
+              <option value="linear">等速（元と同じ）</option>
+              <option value="ease-in-out">ゆっくり始まり、ゆっくり止まる</option>
+            </select>
+          </div>
+        </details>
+
+        <details>
+          <summary>見た目</summary>
+          <div class="row">
+            <label for="resolution">解像度</label>
+            <select id="resolution">
+              <option value="720x720">720 × 720</option>
+              <option value="1080x1080">1080 × 1080</option>
+              <option value="1280x720">1280 × 720</option>
+            </select>
+          </div>
+          <div class="row inline colors">
+            <label>画像の背景 <input type="color" id="imgBg" /></label>
+            <label>線 <input type="color" id="lineColor" /></label>
+            <label>線の背景 <input type="color" id="lineBg" /></label>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button class="btn primary" id="playBtn" disabled>▶ プレビュー再生</button>
+          <div class="row inline">
+            <button class="btn" id="mp4Btn" disabled>MP4 で保存</button>
+            <button class="btn" id="webmBtn" disabled>WebM で保存</button>
+          </div>
+          <progress id="progress" max="1" value="0" hidden></progress>
+          <p class="status" id="status" role="status">素材を読み込んでいます…</p>
+        </div>
+      </aside>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
